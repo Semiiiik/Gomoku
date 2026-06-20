@@ -4,7 +4,7 @@ const gridPaddingPx = 25;
 const gridSizePx = boardSizePx - 2 * gridPaddingPx;
 const dpr = window.devicePixelRatio || 1;
 
-function drawboard() {
+function drawBoard() {
     const board = document.getElementById('board');
     const ctx = board.getContext('2d');
     ctx.strokeStyle = "#000000";
@@ -27,6 +27,7 @@ function drawboard() {
         ctx.lineTo(gridSizePx + gridPaddingPx, lines*gridSizePx/(gridSizeLines - 1) + gridPaddingPx);
         ctx.stroke();
     }
+
     //vertical
     for (let lines = 0; lines < gridSizeLines; lines++) {
         if (lines === 0 || lines === gridSizeLines - 1) {
@@ -39,7 +40,22 @@ function drawboard() {
         ctx.lineTo(lines*gridSizePx/(gridSizeLines - 1) + gridPaddingPx, gridSizePx + gridPaddingPx);
         ctx.stroke();
     }
+
     //outer line
     ctx.strokeRect(gridPaddingPx, gridPaddingPx, gridSizePx, gridSizePx);
+
+    //star points
+    const starPoints = [
+        [3, 3], [3, 11],
+        [7, 7],
+        [11, 3], [11, 11]
+    ];
+
+    for (const [row, col] of starPoints) {
+        ctx.beginPath();
+        ctx.arc(row * gridSizePx/(gridSizeLines - 1) + gridPaddingPx, col * gridSizePx/(gridSizeLines - 1) + gridPaddingPx, 4, 0, Math.PI * 2);
+        ctx.fill();
+    }
+
 }
-drawboard();
+drawBoard();
