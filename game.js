@@ -1,3 +1,8 @@
+const boardCanvas = document.getElementById('board');
+
+//board drawing
+const ctx = boardCanvas.getContext('2d');
+
 const gridSizeLines = 15;
 const boardSizePx = 725;
 const gridPaddingPx = 50;
@@ -6,19 +11,17 @@ const gridSizePx = boardSizePx - 2 * gridPaddingPx;
 const dpr = window.devicePixelRatio || 1;
 const spacing = gridSizePx/(gridSizeLines - 1);
 
+
+boardCanvas.width = boardSizePx * dpr;
+boardCanvas.height = boardSizePx * dpr;
+
+boardCanvas.style.width = boardSizePx + "px";
+boardCanvas.style.height = boardSizePx + "px";
+ctx.scale(dpr, dpr);
+
 function drawBoard() {
-    const board = document.getElementById('board');
-    const ctx = board.getContext('2d');
-
-    board.width = boardSizePx * dpr;
-    board.height = boardSizePx * dpr;
-
     ctx.lineWidth = 1.5;
     ctx.strokeStyle = "#000000";
-
-    board.style.width = boardSizePx + "px";
-    board.style.height = boardSizePx + "px";
-    ctx.scale(dpr, dpr);
 
     //grid
     ctx.beginPath();
@@ -69,4 +72,74 @@ function drawBoard() {
     }
 }
 
-drawBoard();
+function drawStone(x, y) {
+    let color = "black";
+
+    ctx.beginPath();
+    ctx.arc(x,y, spacing * 0.438 , 0, Math.PI * 2,);
+    ctx.fillStyle = color;
+    ctx.lineWidth = 1.5;
+    ctx.fill()
+}
+
+function drawStones() {
+    ctx.clearRect(0, 0, boardSizePx, boardSizePx);
+    drawBoard()
+    for (let row = 0; row < gridSizeLines; row++) {
+        for (let col = 0; col < gridSizeLines; col++) {
+            if (board[row][col] !== null) {
+                drawStone(col * spacing + gridPaddingPx, row * spacing + gridPaddingPx);
+            }
+        }
+    }
+}
+
+//game logic
+let board = [];
+
+
+let clickX;
+let clickY;
+
+function startGame() {
+    for (let row = 0; row < gridSizeLines; row++) {
+        board[row] = [];
+        for (let col = 0; col < gridSizeLines; col++) {
+            board[row][col] = null;
+        }
+    }
+    console.table(board);
+    enableBoardInteraction();
+    drawBoard();
+}
+
+function enableBoardInteraction() {
+    boardCanvas.addEventListener("click", boardClick);
+    console.table(board);
+}
+
+function disableBoardInteraction() {
+    boardCanvas.removeEventListener("click", boardClick);
+}
+
+function boardClick(click) {
+    let col;
+    let row;
+
+    const rect = boardCanvas.getBoundingClientRect();
+
+    clickX = click.clientX - rect.left;
+    clickY = click.clientY - rect.top;
+
+    col = Math.round((clickX - gridPaddingPx) / spacing)
+    row = Math.round((clickY - gridPaddingPx) / spacing)
+
+    if (col > -1 && col < gridSizeLines && row > -1 && row < gridSizeLines && board[row][col] === null) {
+        board[row][col] = 1;
+        drawStones()
+    }
+
+    console.table(board);
+}
+
+startGame();
