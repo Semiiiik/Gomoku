@@ -1,4 +1,8 @@
+//elements
 const boardCanvas = document.getElementById('board');
+const gameEndModal = document.getElementById('gameEndModal');
+document.getElementById("playAgainButton").addEventListener("click", startGame);
+const gameResult = document.getElementById('gameResult');
 
 //drawing
 const ctx = boardCanvas.getContext('2d');
@@ -19,12 +23,9 @@ const coordinatesFontSize = 16;
 
 boardCanvas.width = boardSizePx * dpr;
 boardCanvas.height = boardSizePx * dpr;
-
 boardCanvas.style.width = boardSizePx + "px";
 boardCanvas.style.height = boardSizePx + "px";
 ctx.scale(dpr, dpr);
-
-
 
 function drawBoard() {
     ctx.lineWidth = gridLineWidth;
@@ -33,7 +34,7 @@ function drawBoard() {
 
     //grid
     ctx.beginPath();
-    for (let lines = 0; lines < gridSizeLines; lines++) {
+    for (let lines = 0; lines < gridSizeLines; lines = lines + 1) {
         ctx.moveTo(gridPaddingPx, lines * spacing + gridPaddingPx);
         ctx.lineTo(gridSizePx + gridPaddingPx, lines * spacing + gridPaddingPx);
 
@@ -41,7 +42,6 @@ function drawBoard() {
         ctx.lineTo(lines * spacing + gridPaddingPx, gridSizePx + gridPaddingPx);
     }
     ctx.stroke();
-
     ctx.lineWidth = gridOuterLineWidth;
     ctx.strokeRect(gridPaddingPx, gridPaddingPx, gridSizePx, gridSizePx);
 
@@ -51,7 +51,6 @@ function drawBoard() {
         [7, 7],
         [11, 3], [11, 11]
     ];
-
     for (const [row, col] of starPoints) {
         ctx.beginPath();
         ctx.arc(row * spacing + gridPaddingPx, col * spacing + gridPaddingPx, starPointRadius, 0, Math.PI * 2);
@@ -62,36 +61,29 @@ function drawBoard() {
     ctx.font = coordinatesFontSize + "px 'Lexend', sans-serif";
     ctx.textAlign = "center";
     ctx.textBaseline = "middle";
-
     const cordsLetters = [
         "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O"
     ];
-
-    for (let letters = 0; letters < cordsLetters.length; letters++) {
+    for (let letters = 0; letters < cordsLetters.length; letters = letters + 1) {
         const letter = cordsLetters[letters];
         ctx.fillText(letter, letters * spacing + gridPaddingPx, cordsPaddingPx + gridSizePx + gridPaddingPx);
     }
-
     const cordsNumbers = [
         "15", "14", "13", "12", "11", "10", "9", "8", "7", "6", "5", "4", "3", "2", "1",
     ];
-
-    for (let numbers = 0; numbers < cordsNumbers.length; numbers++) {
+    for (let numbers = 0; numbers < cordsNumbers.length; numbers = numbers + 1) {
         const number = cordsNumbers[numbers];
         ctx.fillText(number, gridPaddingPx - cordsPaddingPx, numbers * spacing + gridPaddingPx);
     }
 }
 
-function drawStone(x, y, turn) {
+function drawStone(x, y, stone) {
     let color;
-    if (turn === 1) {
+    if (stone === 1) {
         color = "black";
-    } else if (turn === 2) {
+    } else if (stone === 2) {
         color = "white";
-    } else {
-        console.log(color, x, y, turn);
     }
-
     ctx.beginPath();
     ctx.arc(x,y, stoneRadius , 0, Math.PI * 2,);
     ctx.fillStyle = color;
@@ -103,8 +95,8 @@ function drawStone(x, y, turn) {
 function drawStones() {
     ctx.clearRect(0, 0, boardSizePx, boardSizePx);
     drawBoard();
-    for (let row = 0; row < gridSizeLines; row++) {
-        for (let col = 0; col < gridSizeLines; col++) {
+    for (let row = 0; row < gridSizeLines; row = row + 1) {
+        for (let col = 0; col < gridSizeLines; col = col + 1) {
             if (board[row][col] !== null) {
                 drawStone(col * spacing + gridPaddingPx, row * spacing + gridPaddingPx, board[row][col]);
             }
@@ -114,28 +106,31 @@ function drawStones() {
 
 //game logic
 const winCondition = 5;
-
 let board = [];
-let turn = 1;
+let stone = 1;
 let move = 0;
 let winner = null;
 
 function startGame() {
-    turn = 1;
-    for (let row = 0; row < gridSizeLines; row++) {
+    gameEndModal.close();
+    move = 0;
+    stone = 1;
+    winner = null;
+    board = [];
+    for (let row = 0; row < gridSizeLines; row = row + 1) {
         board[row] = [];
-        for (let col = 0; col < gridSizeLines; col++) {
+        for (let col = 0; col < gridSizeLines; col = col + 1) {
             board[row][col] = null;
         }
     }
     console.table(board);
     enableBoardInteraction();
     drawBoard();
+    drawStones()
 }
 
 function enableBoardInteraction() {
     boardCanvas.addEventListener("click", boardClick);
-    console.table(board);
 }
 
 function disableBoardInteraction() {
@@ -144,25 +139,23 @@ function disableBoardInteraction() {
 
 function boardClick(click) {
     const rect = boardCanvas.getBoundingClientRect();
-
     const col = Math.round((click.clientX - rect.left - gridPaddingPx) / spacing);
     const row = Math.round((click.clientY - rect.top - gridPaddingPx) / spacing);
-
     if (col > -1 && col < gridSizeLines && row > -1 && row < gridSizeLines && board[row][col] === null) {
         move = move + 1;
-        board[row][col] = turn;
+        board[row][col] = stone;
         drawStones();
-        winDetection(row, col, turn);
-        turn = 3 - turn;
+        winDetection(row, col, stone);
+        stone = 3 - stone;
     }
     if (move >= gridSizeLines * gridSizeLines) {
         endGame();
     }
-    console.log("move" + move);
+    console.log("move" + move, "stone" + stone);
     console.table(board);
 }
 
-function winDetection(row, col, turn) {
+function winDetection(row, col, stone) {
     let stonesInARow = 1;
     const directions = [
         [[1, 1], [-1, -1]],
@@ -170,7 +163,6 @@ function winDetection(row, col, turn) {
         [[0, 1], [0, -1]],
         [[-1, 0], [1, 0]]
     ];
-
     for (const direction of directions) {
         stonesInARow = 1;
         for (const [dirRow, dirCol] of direction) {
@@ -180,44 +172,30 @@ function winDetection(row, col, turn) {
                 col + dirCol * steps < gridSizeLines &&
                 row + dirRow * steps > -1 &&
                 row + dirRow * steps < gridSizeLines &&
-                board[row + dirRow * steps][col + dirCol * steps] === turn
+                board[row + dirRow * steps][col + dirCol * steps] === stone
             ) {
                 stonesInARow = stonesInARow + 1;
                 steps = steps + 1;
             }
         }
         if (stonesInARow === winCondition) {
-            winner = turn;
+            winner = stone;
             endGame();
         }
     }
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 function endGame() {
     disableBoardInteraction()
     if (winner) {
         console.log("player" + winner + "won");
+        gameResult.textContent = "Player " + winner + " Won!";
     } else {
         console.log("draw!");
+        gameResult.textContent = "Draw!";
+
     }
+    gameEndModal.showModal();
 
 }
 

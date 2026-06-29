@@ -1,16 +1,24 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Gomoku</title>
-    <link rel="stylesheet" href="game.css">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@100..900&display=swap" rel="stylesheet">
-</head>
-<body>
-    <canvas id="board" width="725px" height="725px" ></canvas>
 
-    <script src="game.js"></script>
-</body>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>Gomoku</title>
+        <link rel="stylesheet" href="game.css">
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@100..900&display=swap" rel="stylesheet">
+    </head>
+    <body>
+        <canvas id="board" width="725px" height="725px" ></canvas>
+        <dialog class="modal" id="gameEndModal">
+            <h1> Game Ended </h1>
+            <h2 id="gameResult"> Player X Won</h2>
+            <button id="playAgainButton">Play Again</button>
+            <button>Analysis</button>
+            <button>Save Game</button>
+
+        </dialog>
+        <script src="game.js"></script>
+    </body>
 </html>

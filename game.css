@@ -1,12 +1,25 @@
-
-
 body {
     min-height: 100vh;
     overflow: hidden;
     display: flex;
     justify-content: center;
     align-items: center;
+    font-family: 'Lexend', sans-serif;
 }
 #board{
     background: #FFFFFF;
+}
+
+.modal {
+    border-width: 3.5px;
+    border-radius: 15px;
+    outline: none;
+}
+
+dialog::backdrop {
+    backdrop-filter: blur(0.75px);
+}
+
+button {
+    font-family: 'Lexend', sans-serif;
 }
