@@ -10,14 +10,36 @@
         <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@100..900&display=swap" rel="stylesheet">
     </head>
     <body>
+    <div class="game">
+        <div class="playerStatus" id="player2Status">
+            <p>Player 2</p>
+            <p class="swapStartMessage" id="player2SwapStartMessage">Place three stones...</p>
+            <p class="swap2Message hidden" id="player2Swap2Message">Place two more stones...</p>
+            <div class="swapChoose hidden" id="player2SwapChoose">
+                <button class="chooseButton" id="player2ChooseBlack">Play as black</button>
+                <button class="chooseButton" id="player2ChooseWhite">Play as White</button>
+                <button class="chooseButton" id="player2PlaceSwap2">Place swap 2</button>
+            </div>
+        </div>
         <canvas id="board" width="725px" height="725px" ></canvas>
+        <div class="playerStatus" id="player1Status">
+            <p>Player 1</p>
+            <p class="swapStartMessage" id="player1SwapStartMessage">Place three stones...</p>
+            <p class="swap2Message hidden" id="player1Swap2Message">Place two more stones...</p>
+            <div class="swapChoose hidden" id="player1SwapChoose">
+                <button class="chooseButton" id="player1ChooseBlack">Play as black</button>
+                <button class="chooseButton" id="player1ChooseWhite">Play as white</button>
+                <button class="chooseButton" id="player1PlaceSwap2">Place swap 2</button>
+            </div>
+        </div>
+    </div>
+
         <dialog class="modal" id="gameEndModal">
             <h1> Game Ended </h1>
             <h2 id="gameResult"> Player X Won</h2>
             <button id="playAgainButton">Play Again</button>
             <button>Analysis</button>
             <button>Save Game</button>
-
         </dialog>
         <script src="game.js"></script>
     </body>
