@@ -25,6 +25,8 @@ const player1SwapChoose  = document.getElementById('player1SwapChoose');
 const player2SwapChoose = document.getElementById('player2SwapChoose');
 const player1PlaceSwap2 = document.getElementById('player1PlaceSwap2');
 const player2PlaceSwap2 = document.getElementById('player2PlaceSwap2');
+const player1Timer = document.getElementById('player1Timer');
+const player2Timer = document.getElementById('player2Timer');
 //drawing
 const ctx = boardCanvas.getContext('2d');
 
@@ -135,13 +137,24 @@ let winner = null;
 let turn;
 let swap2 = false;
 let startingPlayer = 1;
+let time;
+let time1;
+let time2;
+let timerInterval = null;
+
 
 function startGame() {
     gameEndModal.close();
+    time = 600;
+    time1 = time;
+    time2 = time;
     move = 0;
     stone = 1;
     turn = startingPlayer;
     swap2 = false;
+    player1Timer.textContent = formatTime(time1);
+    player2Timer.textContent = formatTime(time2);
+    timerInterval = setInterval(tick, 1000);
     if (turn === 1) {
         player2Status.classList.remove("highlight");
         player1Status.classList.add("highlight");
@@ -164,7 +177,7 @@ function startGame() {
     console.table(board);
     enableBoardInteraction();
     drawBoard();
-    drawStones()
+    drawStones();
 }
 
 function enableBoardInteraction() {
@@ -233,6 +246,7 @@ function updateUI () {
         player1Swap2Message.classList.add("hidden");
     }
 }
+
 function updateTurn () {
     move = move + 1;
     stone = 3 - stone;
@@ -240,6 +254,46 @@ function updateTurn () {
         turn = 3 - turn;
     }
 }
+
+// timer
+function tick() {
+    if (turn === 1) {
+        time1 = time1 - 1;
+        if (time1 <= 0) {
+            time1 = 0;
+            updateTimer();
+            winner = 2;
+            endGame();
+        }
+
+    }
+    if (turn === 2) {
+        time2 = time2 - 1;
+        if (time2 <= 0) {
+            time2 = 0;
+            updateTimer();
+            winner = 1;
+            endGame()
+        }
+    }
+    updateTimer();
+}
+
+function updateTimer() {
+    if (turn === 1) {
+    player1Timer.textContent = formatTime(time1);
+    }
+    if (turn === 2) {
+        player2Timer.textContent = formatTime(time2);
+    }
+}
+
+function formatTime(seconds) {
+    const m = Math.floor(seconds / 60);
+    const s = seconds % 60;
+    return `${m}:${s < 10 ? '0' : ''}${s}`;
+}
+
 function boardClick(click) {
     const rect = boardCanvas.getBoundingClientRect();
     const col = Math.round((click.clientX - rect.left - gridPaddingPx) / spacing);
@@ -250,6 +304,7 @@ function boardClick(click) {
         winDetection(row, col, stone);
         updateTurn();
         updateUI();
+
         if (move === 3 || move === 5 && swap2 === true) {
             disableBoardInteraction();
         }
@@ -292,6 +347,7 @@ function winDetection(row, col, stone) {
 }
 
 function endGame() {
+    clearInterval(timerInterval);
     disableBoardInteraction()
     startingPlayer = 3 - startingPlayer;
     if (winner) {
