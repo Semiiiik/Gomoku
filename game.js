@@ -2,18 +2,12 @@
 const boardCanvas = document.getElementById('board');
 const gameEndModal = document.getElementById('gameEndModal');
 document.getElementById("playAgainButton").addEventListener("click", startGame);
-document.getElementById("player1ChooseBlack").addEventListener("click", swapChooseBlack);
-document.getElementById("player1ChooseBlack").addEventListener("click", enableBoardInteraction);
-document.getElementById("player1ChooseWhite").addEventListener("click", swapChooseWhite);
-document.getElementById("player1ChooseWhite").addEventListener("click", enableBoardInteraction);
-document.getElementById("player1PlaceSwap2").addEventListener("click", swapChoose2);
-document.getElementById("player1PlaceSwap2").addEventListener("click", enableBoardInteraction);
-document.getElementById("player2ChooseBlack").addEventListener("click", swapChooseBlack);
-document.getElementById("player2ChooseBlack").addEventListener("click", enableBoardInteraction);
-document.getElementById("player2ChooseWhite").addEventListener("click", swapChooseWhite);
-document.getElementById("player2ChooseWhite").addEventListener("click", enableBoardInteraction);
-document.getElementById("player2PlaceSwap2").addEventListener("click", swapChoose2);
-document.getElementById("player2PlaceSwap2").addEventListener("click", enableBoardInteraction);
+document.getElementById("player1ChooseBlack").addEventListener("click", () => swapChoose('black'));
+document.getElementById("player1ChooseWhite").addEventListener("click", () => swapChoose());
+document.getElementById("player1PlaceSwap2").addEventListener("click", () => swapChoose('swap2'));
+document.getElementById("player2ChooseBlack").addEventListener("click", () => swapChoose('black'));
+document.getElementById("player2ChooseWhite").addEventListener("click", () => swapChoose());
+document.getElementById("player2PlaceSwap2").addEventListener("click", () =>swapChoose('swap2'));
 const gameResult = document.getElementById('gameResult');
 const player1Status = document.getElementById('player1Status');
 const player2Status = document.getElementById('player2Status');
@@ -28,7 +22,7 @@ const player2PlaceSwap2 = document.getElementById('player2PlaceSwap2');
 const player1Timer = document.getElementById('player1Timer');
 const player2Timer = document.getElementById('player2Timer');
 //drawing
-const ctx = boardCanvas.getContext('2d');
+const ctx = boardCanvas.getContext('2d'); // webgl2
 
 const gridSizeLines = 15;
 const boardSizePx = 725;
@@ -36,8 +30,9 @@ const gridPaddingPx = 50;
 const cordsPaddingPx = 35;
 const gridSizePx = boardSizePx - 2 * gridPaddingPx;
 const dpr = window.devicePixelRatio || 1;
+
 const spacing = gridSizePx/(gridSizeLines - 1);
-const gridLineWidth = 1.5;
+const gridLineWidth = 1;
 const gridOuterLineWidth = 2;
 const stoneBorderWidth = 1.5;
 const stoneRadius = spacing * 0.45;
@@ -138,6 +133,7 @@ let turn;
 let swap2 = false;
 let startingPlayer = 1;
 let time;
+let increment;
 let time1;
 let time2;
 let timerInterval = null;
@@ -145,16 +141,30 @@ let timerInterval = null;
 
 function startGame() {
     gameEndModal.close();
-    time = 600;
+    time = 6000;
+    increment = 50;
     time1 = time;
     time2 = time;
     move = 0;
     stone = 1;
     turn = startingPlayer;
     swap2 = false;
-    player1Timer.textContent = formatTime(time1);
-    player2Timer.textContent = formatTime(time2);
-    timerInterval = setInterval(tick, 1000);
+
+    const initialFormat1 = formatTime(time1);
+    const initialFormat2 = formatTime(time2);
+
+
+    player1Timer.textContent = initialFormat1.replace(/[0-9]/g, '8');
+    player2Timer.textContent = initialFormat2.replace(/[0-9]/g, '8');
+    player1Timer.style.width = "auto";
+    player2Timer.style.width = "auto";
+    player1Timer.style.width = player1Timer.offsetWidth + "px";
+    player2Timer.style.width = player2Timer.offsetWidth + "px";
+    player1Timer.textContent = initialFormat1;
+    player2Timer.textContent = initialFormat2;
+
+    timerInterval = setInterval(tick, 100);
+
     if (turn === 1) {
         player2Status.classList.remove("highlight");
         player1Status.classList.add("highlight");
@@ -188,38 +198,25 @@ function disableBoardInteraction() {
     boardCanvas.removeEventListener("click", boardClick);
 }
 
-function swapChooseBlack() {
-    player1SwapChoose.classList.add("hidden");
-    player2SwapChoose.classList.add("hidden");
-
-    turn = 3 - turn;
-    if (turn === 1) {
-        player2Status.classList.remove("highlight");
-        player1Status.classList.add("highlight");
-    } else if (turn === 2) {
-        player1Status.classList.remove("highlight");
-        player2Status.classList.add("highlight");
+function swapChoose(choice) {
+    enableBoardInteraction();
+    if (choice === 'black') {
+        incrementTime(); console.log('time incremented' + turn);
+        turn = 3 - turn;
+    } else if (choice === 'swap2') {
+        swap2 = true;
+        if (turn === 1) {
+            player1Swap2Message.classList.remove("hidden");
+        } else if (turn === 2) {
+            player2Swap2Message.classList.remove("hidden");
+        }
     }
-}
-
-function swapChooseWhite() {
+    updateUI()
     player1SwapChoose.classList.add("hidden");
     player2SwapChoose.classList.add("hidden");
 }
 
-function swapChoose2() {
-    player1SwapChoose.classList.add("hidden");
-    player2SwapChoose.classList.add("hidden");
-
-    swap2 = true;
-    if (turn === 1) {
-        player1Swap2Message.classList.remove("hidden");
-    } else if (turn === 2) {
-        player2Swap2Message.classList.remove("hidden");
-    }
-}
-
-function updateUI () {
+function updateUI() {
     if (turn === 1) {
         player2Status.classList.remove("highlight");
         player1Status.classList.add("highlight");
@@ -251,6 +248,7 @@ function updateTurn () {
     move = move + 1;
     stone = 3 - stone;
     if (move >= 3 && swap2 === false || move >= 5) {
+        incrementTime(); console.log('time incremented' + turn);
         turn = 3 - turn;
     }
 }
@@ -277,21 +275,29 @@ function tick() {
         }
     }
     updateTimer();
+    console.log('tick' + ' ' + time1 + ' ' + time2 + ' ' + turn);
 }
 
 function updateTimer() {
-    if (turn === 1) {
     player1Timer.textContent = formatTime(time1);
-    }
-    if (turn === 2) {
-        player2Timer.textContent = formatTime(time2);
-    }
+    player2Timer.textContent = formatTime(time2);   
 }
 
-function formatTime(seconds) {
-    const m = Math.floor(seconds / 60);
-    const s = seconds % 60;
-    return `${m}:${s < 10 ? '0' : ''}${s}`;
+function formatTime(deciseconds) {
+    const ds = deciseconds % 10;
+    const s = Math.floor(deciseconds / 10) % 60;
+    const m = Math.floor(deciseconds / 600) % 60;
+    const h = Math.floor(deciseconds / 36000);
+    return `${h > 0 ? h + ':' : ''}${m < 10 && m > 0 ? '0' : ''}${m > 0 ? m + ':' : ''}${s < 10 ? '0' : ''}${s}.${ds}`;
+}
+
+function incrementTime() {
+    if (turn === 1) {
+        time1 = time1 + increment;
+    }
+    if (turn === 2) {
+        time2 = time2 + increment;
+    }
 }
 
 function boardClick(click) {

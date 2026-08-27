@@ -1,6 +1,5 @@
 body {
     min-height: 100vh;
-    overflow: hidden;
     font-family: 'Lexend', sans-serif;
     display: flex;
     flex-direction: column;
@@ -77,4 +76,14 @@ button:hover {
 
 p {
     margin: 0;
+}
+
+.timer {
+    display: flex;
+    flex-direction: row;
+    gap: 2px;
+}
+
+.timerTime {
+    margin-top: 1px;
 }
