@@ -137,7 +137,9 @@ let increment;
 let time1;
 let time2;
 let timerInterval = null;
-
+let timeStart;
+let time1update;
+let time2update;
 
 function startGame() {
     gameEndModal.close();
@@ -145,10 +147,13 @@ function startGame() {
     increment = 50;
     time1 = time;
     time2 = time;
+    time1update = time;
+    time2update = time;
     move = 0;
     stone = 1;
     turn = startingPlayer;
     swap2 = false;
+    timeStart = Math.round(Date.now() / 100);
 
     const initialFormat1 = formatTime(time1);
     const initialFormat2 = formatTime(time2);
@@ -247,16 +252,22 @@ function updateUI() {
 function updateTurn () {
     move = move + 1;
     stone = 3 - stone;
+    
     if (move >= 3 && swap2 === false || move >= 5) {
         incrementTime(); console.log('time incremented' + turn);
+    
         turn = 3 - turn;
     }
+    time1update = time1;
+    time2update = time2;
+    timeStart = Math.round(Date.now() / 100);
 }
 
 // timer
 function tick() {
     if (turn === 1) {
-        time1 = time1 - 1;
+        time1 = time1update - (Math.round(Date.now() / 100) - timeStart);
+        
         if (time1 <= 0) {
             time1 = 0;
             updateTimer();
@@ -266,7 +277,7 @@ function tick() {
 
     }
     if (turn === 2) {
-        time2 = time2 - 1;
+        time2 = time2update - (Math.round(Date.now() / 100) - timeStart);
         if (time2 <= 0) {
             time2 = 0;
             updateTimer();
