@@ -36,6 +36,7 @@ const gridLineWidth = 1;
 const gridOuterLineWidth = 2;
 const stoneBorderWidth = 1.5;
 const stoneRadius = spacing * 0.45;
+const lastMoveRadius = spacing * 0.075;
 const starPointRadius = 4;
 const coordinatesFontSize = 16;
 
@@ -104,7 +105,7 @@ function drawStone(x, y, stone) {
         color = "white";
     }
     ctx.beginPath();
-    ctx.arc(x,y, stoneRadius , 0, Math.PI * 2,);
+    ctx.arc(x,y, stoneRadius , 0, Math.PI * 2);
     ctx.fillStyle = color;
     ctx.lineWidth = stoneBorderWidth;
     ctx.fill();
@@ -121,6 +122,12 @@ function drawStones() {
             }
         }
     }
+    
+    ctx.beginPath();
+    ctx.arc(lastMove[1] * spacing + gridPaddingPx, lastMove[0] * spacing + gridPaddingPx, lastMoveRadius, 0, Math.PI * 2); console.log("lastMove drawn" + lastMove);
+    ctx.strokeStyle = "red";
+    ctx.lineWidth = 2;
+    ctx.stroke();
 }
 
 //game logic
@@ -140,6 +147,7 @@ let timerInterval = null;
 let timeStart;
 let time1update;
 let time2update;
+let lastMove = [];
 
 function startGame() {
     gameEndModal.close();
@@ -192,7 +200,6 @@ function startGame() {
     console.table(board);
     enableBoardInteraction();
     drawBoard();
-    drawStones();
 }
 
 function enableBoardInteraction() {
@@ -286,7 +293,7 @@ function tick() {
         }
     }
     updateTimer();
-    console.log('tick' + ' ' + time1 + ' ' + time2 + ' ' + turn);
+    /* console.log('tick' + ' ' + time1 + ' ' + time2 + ' ' + turn); */
 }
 
 function updateTimer() {
@@ -317,6 +324,8 @@ function boardClick(click) {
     const row = Math.round((click.clientY - rect.top - gridPaddingPx) / spacing);
     if (col > -1 && col < gridSizeLines && row > -1 && row < gridSizeLines && board[row][col] === null) {
         board[row][col] = stone;
+        lastMove[0] = row;
+        lastMove[1] = col;
         drawStones();
         winDetection(row, col, stone);
         updateTurn();
