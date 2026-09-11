@@ -21,6 +21,7 @@ const player1PlaceSwap2 = document.getElementById('player1PlaceSwap2');
 const player2PlaceSwap2 = document.getElementById('player2PlaceSwap2');
 const player1Timer = document.getElementById('player1Timer');
 const player2Timer = document.getElementById('player2Timer');
+const notationTab = document.getElementById('notationTab');
 //drawing
 const ctx = boardCanvas.getContext('2d'); // webgl2
 
@@ -148,6 +149,7 @@ let timeStart;
 let time1update;
 let time2update;
 let lastMove = [];
+let notation;
 
 function startGame() {
     gameEndModal.close();
@@ -326,6 +328,7 @@ function boardClick(click) {
         board[row][col] = stone;
         lastMove[0] = row;
         lastMove[1] = col;
+        updateNotation(row, col)
         drawStones();
         winDetection(row, col, stone);
         updateTurn();
@@ -340,6 +343,12 @@ function boardClick(click) {
     }
     console.log("move" + move, "stone" + stone, "turn" + turn);
     console.table(board);
+}
+
+function updateNotation(row, col) {
+    notation = `${notation ? notation: ""}${move >= 1 ? ", " : ""}${String.fromCharCode(col + 65)}${15 - row}`;
+    notationTab.textContent = notation;
+    console.log("notation " + notation);
 }
 
 function winDetection(row, col, stone) {
