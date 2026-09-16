@@ -49,6 +49,7 @@ boardCanvas.style.height = boardSizePx + "px";
 ctx.scale(dpr, dpr);
 
 function drawBoard() {
+    ctx.clearRect(0, 0, boardSizePx, boardSizePx);
     ctx.lineWidth = gridLineWidth;
     ctx.strokeStyle = "#000000";
     ctx.fillStyle = "#000000";
@@ -164,6 +165,8 @@ function startGame() {
     turn = startingPlayer;
     swap2 = false;
     timeStart = Math.round(Date.now() / 100);
+    notation = "";
+    notationTab.textContent = notation;
 
     const initialFormat1 = formatTime(time1);
     const initialFormat2 = formatTime(time2);
@@ -346,7 +349,7 @@ function boardClick(click) {
 }
 
 function updateNotation(row, col) {
-    notation = `${notation ? notation: ""}${move >= 1 ? ", " : ""}${String.fromCharCode(col + 65)}${15 - row}`;
+    notation = `${notation ? notation : ""}${move >= 1 ? ", " : ""}${String.fromCharCode(col + 65)}${15 - row}`;
     notationTab.textContent = notation;
     console.log("notation " + notation);
 }

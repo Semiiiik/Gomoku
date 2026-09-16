@@ -4,7 +4,7 @@ body {
     display: flex;
     flex-direction: row;
     justify-content: center;
-    align-items: flex-start;
+
     margin: 0;
 } 
 
@@ -12,7 +12,7 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center;
-    align-items: center;
+    justify-content: center;
     margin: 0;
 }
 #board{
@@ -91,5 +91,12 @@ p {
 
 #notationTab {
     width: 250px;
-    margin-top: 150px;
+    margin-top: 210px;
+    align-items: flex-start;
+}
+
+#notationWrapper {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
 }
