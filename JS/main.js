@@ -1,15 +1,17 @@
-    <!DOCTYPE html>
+import {startGame} from './game.js';
+import {initDOM} from './game.js';
 
-    <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <title>Gomoku</title>
-        <link rel="stylesheet" href="game.css">
-        <link rel="preconnect" href="https://fonts.googleapis.com">
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@100..900&display=swap" rel="stylesheet">
-    </head>
-    <body>
+const pages = {
+  '':
+    `
+    <button id="startGameButton" onclick="window.location.hash = '#game'">start game</button>
+    `,
+  '#gameSettings':
+    `
+    
+    `,
+  '#game':
+    `
     <div class="game">
         <div class="playerStatus" id="player2Status">
             <p>Player 2</p>
@@ -51,7 +53,21 @@
             <button id="playAgainButton">Play Again</button>
             <button>Analysis</button>
             <button>Save Game</button>
-        </dialog>
-        <script src="game.js"></script>
-    </body>
-</html>
+        </dialog>  
+    `
+};
+
+window.addEventListener('hashchange', route);
+window.addEventListener('DOMContentLoaded', route);
+
+function route() {
+    const hash = window.location.hash;
+    const content = document.getElementById("content");
+    
+    content.innerHTML = pages[hash];
+    if (hash === "#game") {
+        initDOM();
+        startGame();
+    };
+}
+

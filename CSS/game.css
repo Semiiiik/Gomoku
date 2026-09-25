@@ -1,5 +1,4 @@
-body {
-    min-height: 100vh;
+#content {
     font-family: 'Lexend', sans-serif;
     display: flex;
     flex-direction: row;
@@ -91,7 +90,7 @@ p {
 
 #notationTab {
     width: 250px;
-    margin-top: 210px;
+    margin-top: 150px;
     align-items: flex-start;
 }
 

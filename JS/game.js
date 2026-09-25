@@ -1,29 +1,56 @@
 //elements
-const boardCanvas = document.getElementById('board');
-const gameEndModal = document.getElementById('gameEndModal');
-document.getElementById("playAgainButton").addEventListener("click", startGame);
-document.getElementById("player1ChooseBlack").addEventListener("click", () => swapChoose('black'));
-document.getElementById("player1ChooseWhite").addEventListener("click", () => swapChoose());
-document.getElementById("player1PlaceSwap2").addEventListener("click", () => swapChoose('swap2'));
-document.getElementById("player2ChooseBlack").addEventListener("click", () => swapChoose('black'));
-document.getElementById("player2ChooseWhite").addEventListener("click", () => swapChoose());
-document.getElementById("player2PlaceSwap2").addEventListener("click", () =>swapChoose('swap2'));
-const gameResult = document.getElementById('gameResult');
-const player1Status = document.getElementById('player1Status');
-const player2Status = document.getElementById('player2Status');
-const player1SwapStartMessage = document.getElementById('player1SwapStartMessage');
-const player2SwapStartMessage = document.getElementById('player2SwapStartMessage');
-const player1Swap2Message = document.getElementById('player1Swap2Message');
-const player2Swap2Message = document.getElementById('player2Swap2Message');
-const player1SwapChoose  = document.getElementById('player1SwapChoose');
-const player2SwapChoose = document.getElementById('player2SwapChoose');
-const player1PlaceSwap2 = document.getElementById('player1PlaceSwap2');
-const player2PlaceSwap2 = document.getElementById('player2PlaceSwap2');
-const player1Timer = document.getElementById('player1Timer');
-const player2Timer = document.getElementById('player2Timer');
-const notationTab = document.getElementById('notationTab');
-//drawing
-const ctx = boardCanvas.getContext('2d'); // webgl2
+let boardCanvas
+let gameEndModal
+let gameResult
+let player1Status
+let player2Status
+let player1SwapStartMessage
+let player2SwapStartMessage
+let player1Swap2Message
+let player2Swap2Message
+let player1SwapChoose
+let player2SwapChoose
+let player1PlaceSwap2
+let player2PlaceSwap2
+let player1Timer
+let player2Timer
+let notationTab
+
+let ctx
+
+export function initDOM() {
+    boardCanvas = document.getElementById('board');
+    gameEndModal = document.getElementById('gameEndModal');
+    document.getElementById("playAgainButton").addEventListener("click", startGame);
+    document.getElementById("player1ChooseBlack").addEventListener("click", () => swapChoose('black'));
+    document.getElementById("player1ChooseWhite").addEventListener("click", () => swapChoose());
+    document.getElementById("player1PlaceSwap2").addEventListener("click", () => swapChoose('swap2'));
+    document.getElementById("player2ChooseBlack").addEventListener("click", () => swapChoose('black'));
+    document.getElementById("player2ChooseWhite").addEventListener("click", () => swapChoose());
+    document.getElementById("player2PlaceSwap2").addEventListener("click", () => swapChoose('swap2'));
+    gameResult = document.getElementById('gameResult');
+    player1Status = document.getElementById('player1Status');
+    player2Status = document.getElementById('player2Status');
+    player1SwapStartMessage = document.getElementById('player1SwapStartMessage');
+    player2SwapStartMessage = document.getElementById('player2SwapStartMessage');
+    player1Swap2Message = document.getElementById('player1Swap2Message');
+    player2Swap2Message = document.getElementById('player2Swap2Message');
+    player1SwapChoose = document.getElementById('player1SwapChoose');
+    player2SwapChoose = document.getElementById('player2SwapChoose');
+    player1PlaceSwap2 = document.getElementById('player1PlaceSwap2');
+    player2PlaceSwap2 = document.getElementById('player2PlaceSwap2');
+    player1Timer = document.getElementById('player1Timer');
+    player2Timer = document.getElementById('player2Timer');
+    notationTab = document.getElementById('notationTab');
+    
+    ctx = boardCanvas.getContext('2d');
+    boardCanvas.width = boardSizePx * dpr;
+    boardCanvas.height = boardSizePx * dpr;
+    boardCanvas.style.width = boardSizePx + "px";
+    boardCanvas.style.height = boardSizePx + "px";
+    ctx.scale(dpr, dpr);
+}
+
 
 const gridSizeLines = 15;
 const boardSizePx = 725;
@@ -40,13 +67,6 @@ const stoneRadius = spacing * 0.45;
 const lastMoveRadius = spacing * 0.075;
 const starPointRadius = 4;
 const coordinatesFontSize = 16;
-
-
-boardCanvas.width = boardSizePx * dpr;
-boardCanvas.height = boardSizePx * dpr;
-boardCanvas.style.width = boardSizePx + "px";
-boardCanvas.style.height = boardSizePx + "px";
-ctx.scale(dpr, dpr);
 
 function drawBoard() {
     ctx.clearRect(0, 0, boardSizePx, boardSizePx);
@@ -152,7 +172,7 @@ let time2update;
 let lastMove = [];
 let notation;
 
-function startGame() {
+export function startGame() {
     gameEndModal.close();
     time = 6000;
     increment = 50;
@@ -399,5 +419,3 @@ function endGame() {
     gameEndModal.showModal();
 
 }
-
-startGame();
