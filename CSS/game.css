@@ -3,7 +3,6 @@
     display: flex;
     flex-direction: row;
     justify-content: center;
-
     margin: 0;
 } 
 
@@ -98,4 +97,41 @@ p {
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
+}
+
+.gameSettings {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+input {
+    font-family: 'Lexend', sans-serif;
+    border-radius: 5px;
+    border: 3px solid #000000;
+    padding: 7px;
+    height: 25px;
+}
+
+.toggleSwitch .checkbox {
+    opacity: 0;
+}
+
+.toggleSwitch {
+    width: 200px;
+    height: 25px;
+    border: 3px solid #000000;
+    border-radius: 50px;
+    display: flex;
+    align-items: center;
+    padding: 2.5px;
+    cursor: pointer;
+}
+
+.toggleSwitch .slider {
+    width: 100px;
+    height: 90%;
+    border-radius: 50px;
+    border: 3px solid #000000;
+    
 }

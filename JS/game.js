@@ -1,3 +1,5 @@
+import {gameSettings} from "./gameSettings.js";
+
 //elements
 let boardCanvas
 let gameEndModal
@@ -15,6 +17,8 @@ let player2PlaceSwap2
 let player1Timer
 let player2Timer
 let notationTab
+let player1NameDisplay
+let player2NameDisplay
 
 let ctx
 
@@ -42,6 +46,8 @@ export function initDOM() {
     player1Timer = document.getElementById('player1Timer');
     player2Timer = document.getElementById('player2Timer');
     notationTab = document.getElementById('notationTab');
+    player1NameDisplay = document.getElementById('player1NameDisplay');
+    player2NameDisplay = document.getElementById('player2NameDisplay');
     
     ctx = boardCanvas.getContext('2d');
     boardCanvas.width = boardSizePx * dpr;
@@ -173,16 +179,38 @@ let lastMove = [];
 let notation;
 
 export function startGame() {
+    console.log(gameSettings);
+    if (gameSettings.player1Name) {
+        player1NameDisplay.textContent = gameSettings.player1Name;
+    } else {
+        player1NameDisplay.textContent = "Player 1"
+    }
+    if (gameSettings.player2Name) {
+        player2NameDisplay.textContent = gameSettings.player2Name;
+    } else {
+        player2NameDisplay.textContent = "Player 2"
+    }
+
+    if (gameSettings.timer) {
+        time = 600 * gameSettings.timer;
+    } else {
+        time = 600 * 20
+    }
+    if (gameSettings.increment) {
+        increment = 10 * gameSettings.increment;
+    } else {
+        increment = 10 * 5;
+    }
+
+
     gameEndModal.close();
-    time = 6000;
-    increment = 50;
     time1 = time;
     time2 = time;
     time1update = time;
     time2update = time;
     move = 0;
     stone = 1;
-    turn = startingPlayer;
+    turn = gameSettings.startingPlayer;
     swap2 = false;
     timeStart = Math.round(Date.now() / 100);
     notation = "";
@@ -331,7 +359,8 @@ function formatTime(deciseconds) {
     const s = Math.floor(deciseconds / 10) % 60;
     const m = Math.floor(deciseconds / 600) % 60;
     const h = Math.floor(deciseconds / 36000);
-    return `${h > 0 ? h + ':' : ''}${m < 10 && m > 0 ? '0' : ''}${m > 0 ? m + ':' : ''}${s < 10 ? '0' : ''}${s}.${ds}`;
+    //return `${h > 0 ? h + ':' : ''}${m < 10 && m > 0 ? '0' : ''}${m > 0 ? m + ':' : ''}${s < 10 ? '0' : ''}${s}.${ds}`;
+    return `${h > 0 ? h + ':' : ''}${h > 0 && m < 10 ? '0' : ''}${m + ':'}${s < 10 ? '0' : ''}${s}.${ds}`;
 }
 
 function incrementTime() {
